@@ -31,7 +31,7 @@ class AuthHandler(object):
             return jwt_token
 
         try:
-            self.log.debug("Attempt to get IAP token for %s." + client_id)
+            self.log.debug(f"Attempt to get IAP token for %s.{client_id}")
             jwt_token = id_token.fetch_id_token(Request(), client_id)
             self.log.info("Obtained JWT token for IAP proxy authentication.")
         except DefaultCredentialsError as ex:
@@ -46,7 +46,7 @@ class AuthHandler(object):
                 )
             )
         except Exception as e:
-            self.log.error("Failed to obtain IAP access token. " + str(e))
+            self.log.error(f"Failed to obtain IAP access token. {str(e)}")
         finally:
             return jwt_token
 
@@ -74,11 +74,12 @@ class AuthHandler(object):
                     [
                         kfp_url_parts.scheme,
                         kfp_url_parts.netloc,
-                        html.unescape(form_url.group(0)),
+                        html.unescape(form_url[0]),
                         None,
                         None,
                     ]
                 )
+
             return None
 
         r = s.get(kfp_api)

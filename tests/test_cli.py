@@ -347,7 +347,7 @@ class TestPluginCLI(unittest.TestCase):
             runner = CliRunner()
             with self.subTest(msg=testname):
                 cli = ["--env", cli] if cli else []
-                env = dict(KEDRO_ENV=env_var) if env_var else dict()
+                env = dict(KEDRO_ENV=env_var) if env_var else {}
 
                 runner.invoke(
                     kubeflow_group, cli + ["compile", "--help"], env=env

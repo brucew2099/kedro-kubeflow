@@ -33,7 +33,7 @@ myst_substitutions = {
 }
 
 # The full version, including alpha/beta/rc tags
-version = re.match(r"^([0-9]+\.[0-9]+).*", release).group(1)
+version = re.match(r"^([0-9]+\.[0-9]+).*", release)[1]
 _package_name = _package_name.replace("_", "-")
 _package = pkg_resources.working_set.by_key[_package_name]
 
@@ -46,7 +46,7 @@ def update_templates_with_requirements(packages_set, label):
     built_packages = {}
     for p in packages_set:
         try:
-            req_label = label + "build_" + p.name
+            req_label = f"{label}build_{p.name}"
             built_packages[req_label] = pkg_resources.get_distribution(
                 p
             ).version

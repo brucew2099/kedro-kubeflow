@@ -14,7 +14,7 @@ WAIT_TIMEOUT = 24 * 60 * 60
 
 
 def format_params(params: list):
-    return dict((p[: p.find(":")], p[p.find(":") + 1 :]) for p in params)
+    return {p[: p.find(":")]: p[p.find(":") + 1 :] for p in params}
 
 
 @click.group("Kubeflow")
@@ -110,7 +110,7 @@ def run_once(
     try:
         result = context_helper.kfp_client.run_once(
             pipeline=pipeline,
-            image=image if image else config.image,
+            image=image or config.image,
             experiment_name=config.experiment_name,
             experiment_namespace=experiment_namespace,
             run_name=config.run_name,
@@ -119,6 +119,7 @@ def run_once(
             image_pull_policy=config.image_pull_policy,
             parameters=format_params(params),
         )
+
     except TimeoutError as err:
         result = {"status": "error", "error": str(err)}
     if isinstance(result, dict):
@@ -171,7 +172,7 @@ def compile(ctx, image, pipeline, output) -> None:
     context_helper.kfp_client.compile(
         pipeline=pipeline,
         image_pull_policy=config.image_pull_policy,
-        image=image if image else config.image,
+        image=image or config.image,
         output=output,
     )
 
@@ -199,7 +200,7 @@ def upload_pipeline(ctx, image, pipeline) -> None:
 
     context_helper.kfp_client.upload(
         pipeline_name=pipeline,
-        image=image if image else config.image,
+        image=image or config.image,
         image_pull_policy=config.image_pull_policy,
         env=ctx.obj["context_helper"].env,
     )
@@ -256,7 +257,7 @@ def schedule(
     """Schedules recurring execution of latest version of the pipeline"""
     context_helper = ctx.obj["context_helper"]
     config = context_helper.config.run_config
-    experiment = experiment_name if experiment_name else config.experiment_name
+    experiment = experiment_name or config.experiment_name
 
     context_helper.kfp_client.schedule(
         pipeline,
@@ -312,8 +313,7 @@ def init(ctx, kfp_url: str, with_github_actions: bool):
 def mlflow_start(ctx, kubeflow_run_id: str, output: str):
     import mlflow  # NOQA
 
-    token = AuthHandler().obtain_id_token()
-    if token:
+    if token := AuthHandler().obtain_id_token():
         os.environ["MLFLOW_TRACKING_TOKEN"] = token
         LOG.info("Configuring MLFLOW_TRACKING_TOKEN")
 

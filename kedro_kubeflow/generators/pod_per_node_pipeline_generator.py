@@ -167,26 +167,25 @@ class PodPerNodePipelineGenerator(object):
 
         if self.run_config.volume.skip_init:
             return {"/home/kedro/data": vop.volume}
-        else:
-            volume_init = customize_op(
-                dsl.ContainerOp(
-                    name="data-volume-init",
-                    image=image,
-                    command=["sh", "-c"],
-                    arguments=[
-                        " ".join(
-                            [
-                                "cp",
-                                "--verbose",
-                                "-r",
-                                "/home/kedro/data/*",
-                                "/home/kedro/datavolume",
-                            ]
-                        )
-                    ],
-                    pvolumes={"/home/kedro/datavolume": vop.volume},
-                ),
-                image_pull_policy,
-                self.run_config,
-            )
-            return {"/home/kedro/data": volume_init.pvolume}
+        volume_init = customize_op(
+            dsl.ContainerOp(
+                name="data-volume-init",
+                image=image,
+                command=["sh", "-c"],
+                arguments=[
+                    " ".join(
+                        [
+                            "cp",
+                            "--verbose",
+                            "-r",
+                            "/home/kedro/data/*",
+                            "/home/kedro/datavolume",
+                        ]
+                    )
+                ],
+                pvolumes={"/home/kedro/datavolume": vop.volume},
+            ),
+            image_pull_policy,
+            self.run_config,
+        )
+        return {"/home/kedro/data": volume_init.pvolume}

@@ -14,8 +14,7 @@ class MlflowIapAuthHook:
     @hook_impl
     def after_catalog_created(self, catalog: DataCatalog, **kwargs) -> None:
 
-        token = AuthHandler().obtain_id_token()
-        if token:
+        if token := AuthHandler().obtain_id_token():
             os.environ["MLFLOW_TRACKING_TOKEN"] = token
 
 
