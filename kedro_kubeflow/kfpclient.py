@@ -93,7 +93,7 @@ class KubeflowClient(object):
             ),
             output,
         )
-        self.log.info("Generated pipeline definition was saved to %s" % output)
+        self.log.info(f"Generated pipeline definition was saved to {output}")
 
     def get_full_pipeline_name(self, pipeline_name, env):
         return f"[{self.project_name}] {pipeline_name} (env: {env})"[:100]

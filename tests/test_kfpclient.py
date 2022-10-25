@@ -49,12 +49,7 @@ class TestKubeflowClient(unittest.TestCase, MinimalConfigMixin):
             {
                 "jobs": [
                     type(
-                        "obj",
-                        (object,),
-                        {
-                            "name": job_name,
-                            "id": job_name + "ID",
-                        },
+                        "obj", (object,), {"name": job_name, "id": f"{job_name}ID"}
                     )
                 ]
             },

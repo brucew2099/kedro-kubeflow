@@ -226,10 +226,9 @@ class ExtraVolumeConfig(BaseModel):
     def _resolve_cls(cls_name):
         if hasattr(k8s_client, cls_name):
             return getattr(k8s_client, cls_name, None)
-        else:
-            module_name, class_name = cls_name.rsplit(".", 1)
-            module = import_module(module_name)
-            return getattr(module, class_name, None)
+        module_name, class_name = cls_name.rsplit(".", 1)
+        module = import_module(module_name)
+        return getattr(module, class_name, None)
 
     @staticmethod
     def _construct(value: Union[ObjectKwargs, Any]):
